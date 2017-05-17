@@ -121,11 +121,13 @@
   <ItemGroup>
     <ClCompile Include="src\client\client.c" />
     <ClCompile Include="src\libhttp.c" />
+    <ClCompile Include="src\net\worker.c" />
     <ClCompile Include="src\types\req.c" />
     <ClCompile Include="vendor\http-parser\http_parser.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\include\client\client.h" />
+    <ClInclude Include="src\include\net\worker.h" />
     <ClInclude Include="src\include\types\req.h" />
     <ClInclude Include="src\include\types\res.h" />
     <ClInclude Include="src\types\res.c" />

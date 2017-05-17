@@ -1,7 +1,5 @@
 #include "../include/types/res.h"
 
-#include <memory>
-
 http_res_t *http_res_create() {
 	http_res_t *res = (http_res_t *) malloc(sizeof(http_res_t));
 

@@ -8,4 +8,4 @@ typedef struct {
 
 http_res_t *http_res_create();
 
-void http_res_dispose();
+void http_res_dispose(http_res_t *res);

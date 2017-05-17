@@ -27,6 +27,9 @@
     <ClCompile Include="src\types\req.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\net\worker.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vendor\http-parser\include\http_parser.h">
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\types\res.c">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\net\worker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

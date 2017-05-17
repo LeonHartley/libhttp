@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 typedef struct {
 	int placeholder;
 } http_req_t;
