@@ -2,13 +2,35 @@
 
 #include <stdio.h>
 
+const char *DEFAULT_RESPONSE = "HTTP/1.1 200 OK\r\n\
+Content-Type: text/html; charset=UTF-8\r\n\
+Content-Encoding: UTF-8\r\n\
+Content-Length: 16\r\n\
+Server: libhttp-1.0\r\n\
+Connection: close\r\n\
+\r\n\
+send buffer test";
+
 void http_worker_alloc_buffer(uv_handle_t *handle, ssize_t size, uv_buf_t *buffer) {
 	buffer->base = malloc(size);
 	buffer->len = size;
 }
 
 void http_worker_on_close(uv_stream_t *handle) {
-	
+	// free anything allocated
+}
+
+void http_worker_on_write(uv_write_t *req, int status) {
+	if (status) {
+		printf("Failed to write to client %s", uv_strerror(status));
+		return;
+	}
+}
+
+void http_worker_close_on_write(uv_write_t *req, int status) {
+	http_worker_on_write(req, status);
+
+	uv_close((uv_handle_t *)req->handle, &http_worker_on_close);
 }
 
 void http_worker_read(uv_stream_t *handle, ssize_t read, const uv_buf_t *buffer) {
@@ -25,7 +47,18 @@ void http_worker_read(uv_stream_t *handle, ssize_t read, const uv_buf_t *buffer)
 	memcpy(data, buffer->base, read);
 
 	printf("data received %s\n", data);
-	
+
+	// send the demo response
+	uv_write_t *write = malloc(sizeof(uv_write_t));
+	uv_buf_t wbuf = uv_buf_init(malloc(strlen(DEFAULT_RESPONSE)), strlen(DEFAULT_RESPONSE));
+
+	memcpy(wbuf.base, DEFAULT_RESPONSE, wbuf.len);
+
+	write->handle = handle;
+	write->data = buffer;
+
+	uv_write(write, handle, &wbuf, 1, &http_worker_close_on_write);
+
 	free(data);
 	free(buffer->base);
 }
