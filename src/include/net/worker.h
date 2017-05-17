@@ -4,8 +4,9 @@
 #include <memory.h>
 
 #include "../client/client.h"
+#include "../types/req.h"
 
-typedef void(*http_request_handler_cb) (http_client_t *client);
+typedef void(*http_request_handler_cb) (http_client_t *client, http_req_t *req);
 
 typedef struct {
 	char *host;

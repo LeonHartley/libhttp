@@ -75,7 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>C:\Program Files\libuv;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Users\leon\Documents\Visual Studio 2017\Projects\libhttp\libhttp\vendor\http-parser;C:\Program Files\libuv\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\leon\Documents\GitHub\libhttp\vendor\collections;C:\Users\leon\Documents\Visual Studio 2017\Projects\libhttp\libhttp\vendor\http-parser;C:\Program Files\libuv\include;$(IncludePath)</IncludePath>
     <SourcePath>C:\Users\leon\Documents\Visual Studio 2017\Projects\libhttp\libhttp\vendor\http-parser;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -120,6 +120,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\client\client.c" />
+    <ClCompile Include="src\include\routes\router.h" />
     <ClCompile Include="src\libhttp.c" />
     <ClCompile Include="src\net\worker.c" />
     <ClCompile Include="src\types\req.c" />
@@ -128,6 +129,7 @@
   <ItemGroup>
     <ClInclude Include="src\include\client\client.h" />
     <ClInclude Include="src\include\net\worker.h" />
+    <ClInclude Include="src\include\types\parser.h" />
     <ClInclude Include="src\include\types\req.h" />
     <ClInclude Include="src\include\types\res.h" />
     <ClInclude Include="src\types\res.c" />

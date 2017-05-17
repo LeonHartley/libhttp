@@ -46,7 +46,12 @@ void http_worker_read(uv_stream_t *handle, ssize_t read, const uv_buf_t *buffer)
 	char *data = malloc(read);
 	memcpy(data, buffer->base, read);
 
-	printf("data received %s\n", data);
+	http_client_t *client = http_client_create((uv_tcp_t *)handle);
+	http_req_t *request = http_req_create(client, data, read);
+
+	printf("requested url: %s\r\n", request->url);
+
+	http_req_dispose(request);
 
 	// send the demo response
 	uv_write_t *write = malloc(sizeof(uv_write_t));
@@ -74,7 +79,7 @@ void http_worker_connection(uv_stream_t *server, int status) {
 		uv_read_start((uv_stream_t *)client, &http_worker_alloc_buffer, &http_worker_read);
 	}
 	else {
-		printf("Failed to accept client %s", uv_strerror(result));
+		printf("Failed to accept client %\ns", uv_strerror(result));
 	}
 }
 
