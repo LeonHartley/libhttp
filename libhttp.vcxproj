@@ -75,8 +75,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>C:\Program Files\libuv;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Users\leon\Documents\GitHub\libhttp\vendor\collections;C:\Users\leon\Documents\Visual Studio 2017\Projects\libhttp\libhttp\vendor\http-parser;C:\Program Files\libuv\include;$(IncludePath)</IncludePath>
-    <SourcePath>C:\Users\leon\Documents\Visual Studio 2017\Projects\libhttp\libhttp\vendor\http-parser;$(SourcePath)</SourcePath>
+    <IncludePath>C:\Users\leon\Documents\Visual Studio 2017\Projects\libhttp\libhttp\vendor\http-parser;C:\Program Files\libuv\include;$(IncludePath)</IncludePath>
+    <SourcePath>C:\Users\leon\Documents\GitHub\libhttp\vendor\http-parser;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -123,7 +123,11 @@
     <ClCompile Include="src\include\routes\router.h" />
     <ClCompile Include="src\libhttp.c" />
     <ClCompile Include="src\net\worker.c" />
+    <ClCompile Include="src\routes\router.c" />
     <ClCompile Include="src\types\req.c" />
+    <ClCompile Include="src\include\util\array.c" />
+    <ClCompile Include="src\include\util\common.c" />
+    <ClCompile Include="src\include\util\hashtable.c" />
     <ClCompile Include="vendor\http-parser\http_parser.c" />
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +137,9 @@
     <ClInclude Include="src\include\types\req.h" />
     <ClInclude Include="src\include\types\res.h" />
     <ClInclude Include="src\types\res.c" />
+    <ClInclude Include="src\include\util\array.h" />
+    <ClInclude Include="src\include\util\common.h" />
+    <ClInclude Include="src\include\util\hashtable.h" />
     <ClInclude Include="vendor\http-parser\include\http_parser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -54,6 +54,8 @@ http_req_t *http_req_create(http_client_t *client, char *data, int length) {
 	}
 	else {
 		printf("Parsed http request, length: %i\n", parsed);
+		
+		req->type = client->parser->type;
 	}
 	
 	return req;

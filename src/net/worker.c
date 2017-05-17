@@ -33,6 +33,22 @@ void http_worker_close_on_write(uv_write_t *req, int status) {
 	uv_close((uv_handle_t *)req->handle, &http_worker_on_close);
 }
 
+/*
+	// send the demo response
+	uv_write_t *write = malloc(sizeof(uv_write_t));
+	uv_buf_t wbuf = uv_buf_init(malloc(strlen(DEFAULT_RESPONSE)), strlen(DEFAULT_RESPONSE));
+
+	memcpy(wbuf.base, DEFAULT_RESPONSE, wbuf.len);
+
+	write->handle = handle;
+	write->data = buffer;
+
+	uv_write(write, handle, &wbuf, 1, &http_worker_close_on_write);
+
+	free(data);
+	free(buffer->base);
+	*/
+
 void http_worker_read(uv_stream_t *handle, ssize_t read, const uv_buf_t *buffer) {
 	// read the entire request and parse it.
 	// once the message has been parsed, we want to dispatch
@@ -49,23 +65,10 @@ void http_worker_read(uv_stream_t *handle, ssize_t read, const uv_buf_t *buffer)
 	http_client_t *client = http_client_create((uv_tcp_t *)handle);
 	http_req_t *request = http_req_create(client, data, read);
 
-	printf("requested url: %s\r\n", request->url);
+	http_worker_t *worker = (http_worker_t *)handle->loop->data;
 
+	http_router_exec(request->type, request->url, client, request, worker->config->router);
 	http_req_dispose(request);
-
-	// send the demo response
-	uv_write_t *write = malloc(sizeof(uv_write_t));
-	uv_buf_t wbuf = uv_buf_init(malloc(strlen(DEFAULT_RESPONSE)), strlen(DEFAULT_RESPONSE));
-
-	memcpy(wbuf.base, DEFAULT_RESPONSE, wbuf.len);
-
-	write->handle = handle;
-	write->data = buffer;
-
-	uv_write(write, handle, &wbuf, 1, &http_worker_close_on_write);
-
-	free(data);
-	free(buffer->base);
 }
 
 void http_worker_connection(uv_stream_t *server, int status) {

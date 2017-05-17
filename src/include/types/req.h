@@ -1,10 +1,10 @@
 #pragma once
 
 #include "../client/client.h"
-
-#include <include/hashtable.h>
+#include "../util/hashtable.h"
 
 typedef struct {
+	int type;
 	char *host;
 	char *url;
 	hashtable_t *headers;
