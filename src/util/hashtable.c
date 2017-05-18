@@ -643,14 +643,14 @@ static INLINE size_t get_table_index(HashTable *table, void *key)
  * @param[in] table the table on which this operation is being performed
  * @param[in] fn the operation function that is invoked on each key of the table
  */
-void hashtable_foreach_key(HashTable *table, void (*fn) (const void *key))
+void hashtable_foreach_key(HashTable *table, void (*fn) (const void *key, const void *data), void *data)
 {
     size_t i;
     for (i = 0; i <table->capacity; i++) {
         TableEntry *entry = table->buckets[i];
 
         while (entry) {
-            fn(entry->key);
+            fn(entry->key, data);
             entry = entry->next;
         }
     }

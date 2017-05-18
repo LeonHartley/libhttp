@@ -138,7 +138,7 @@ size_t        hashtable_hash_string     (const void *key, int len, uint32_t seed
 size_t        hashtable_hash            (const void *key, int len, uint32_t seed);
 size_t        hashtable_hash_ptr        (const void *key, int len, uint32_t seed);
 
-void          hashtable_foreach_key     (HashTable *table, void (*op) (const void *));
+void          hashtable_foreach_key     (HashTable *table, void (*op) (const void *key, const void *data), void *data);
 void          hashtable_foreach_value   (HashTable *table, void (*op) (void *));
 
 void          hashtable_iter_init       (HashTableIter *iter, HashTable *table);

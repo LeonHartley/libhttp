@@ -1,18 +1,21 @@
 #pragma comment (lib, "libuv.lib")
 
-#include "include/net/worker.h"
-#include "include/routes/router.h"
+#include "net/worker.h"
+#include "routes/router.h"
 
 #include <stdio.h>
 #include <uv.h>
-#include <memory.h>
 
 void index_handler(http_client_t *client, http_req_t *req) {
 	printf("Index was handled.\n");
+
+	http_res_send("Welcome to the index page!", client->res);
 }
 
 void hello_handler(http_client_t *client, http_req_t *req) {
 	printf("Hello was handled.\n");
+
+	http_res_send("Welcome to the hello page!", client->res);
 }
 
 int main(int argc, char *argv[]) {

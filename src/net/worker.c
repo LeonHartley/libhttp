@@ -1,15 +1,6 @@
-#include "../include/net/worker.h"
+#include "../net/worker.h"
 
 #include <stdio.h>
-
-const char *DEFAULT_RESPONSE = "HTTP/1.1 200 OK\r\n\
-Content-Type: text/html; charset=UTF-8\r\n\
-Content-Encoding: UTF-8\r\n\
-Content-Length: 16\r\n\
-Server: libhttp-1.0\r\n\
-Connection: close\r\n\
-\r\n\
-send buffer test";
 
 void http_worker_alloc_buffer(uv_handle_t *handle, ssize_t size, uv_buf_t *buffer) {
 	buffer->base = malloc(size);
@@ -18,6 +9,9 @@ void http_worker_alloc_buffer(uv_handle_t *handle, ssize_t size, uv_buf_t *buffe
 
 void http_worker_on_close(uv_stream_t *handle) {
 	// free anything allocated
+	printf("Client was closed\n");
+
+	http_client_dispose((http_client_t *)handle->data);
 }
 
 void http_worker_on_write(uv_write_t *req, int status) {
@@ -25,29 +19,32 @@ void http_worker_on_write(uv_write_t *req, int status) {
 		printf("Failed to write to client %s", uv_strerror(status));
 		return;
 	}
+
+	http_buffer_dispose(req->data);
+	
+	//free(req->write_buffer.base);
+	//free(req);
 }
 
 void http_worker_close_on_write(uv_write_t *req, int status) {
-	http_worker_on_write(req, status);
 
 	uv_close((uv_handle_t *)req->handle, &http_worker_on_close);
+	http_worker_on_write(req, status);
 }
 
-/*
-	// send the demo response
+void http_worker_flush(http_client_t *client) {
+	http_buffer_t *buffer = http_res_compose(client->res);
+
 	uv_write_t *write = malloc(sizeof(uv_write_t));
-	uv_buf_t wbuf = uv_buf_init(malloc(strlen(DEFAULT_RESPONSE)), strlen(DEFAULT_RESPONSE));
+	uv_buf_t wbuf = uv_buf_init(malloc(buffer->position), buffer->position);
 
-	memcpy(wbuf.base, DEFAULT_RESPONSE, wbuf.len);
+	memcpy(wbuf.base, buffer->data, wbuf.len);
 
-	write->handle = handle;
+	write->handle = client->socket;
 	write->data = buffer;
 
-	uv_write(write, handle, &wbuf, 1, &http_worker_close_on_write);
-
-	free(data);
-	free(buffer->base);
-	*/
+	uv_write(write, client->socket, &wbuf, 1, &http_worker_close_on_write);
+}
 
 void http_worker_read(uv_stream_t *handle, ssize_t read, const uv_buf_t *buffer) {
 	// read the entire request and parse it.
@@ -56,18 +53,38 @@ void http_worker_read(uv_stream_t *handle, ssize_t read, const uv_buf_t *buffer)
 
 	if (read < 0) {
 		// disconnect
+		uv_close((uv_handle_t *)handle, &http_worker_on_close);
 		return;
 	}
 
 	char *data = malloc(read);
 	memcpy(data, buffer->base, read);
 
-	http_client_t *client = http_client_create((uv_tcp_t *)handle);
+	http_client_t *client;
+
+	if (handle->data == NULL) {
+		client = http_client_create((uv_tcp_t *)handle);
+		handle->data = client;
+	}
+	else {
+		client = (http_client_t *)handle->data;
+	}
+
 	http_req_t *request = http_req_create(client, data, read);
 
 	http_worker_t *worker = (http_worker_t *)handle->loop->data;
 
-	http_router_exec(request->type, request->url, client, request, worker->config->router);
+	if (http_router_exec(request->type, request->url, client, request, worker->config->router)) {
+		// unsuccessful
+		uv_close((uv_handle_t *)handle, &http_worker_on_close);
+	}
+	else {
+		if (client->res->flush) {
+			http_worker_flush(client);
+		}
+	}
+
+	// here's where we send the response and then trigger a close event.
 	http_req_dispose(request);
 }
 
@@ -79,10 +96,13 @@ void http_worker_connection(uv_stream_t *server, int status) {
 	int result = uv_accept(server, (uv_stream_t *)client);
 
 	if (!result) {
+		client->data = http_client_create(client);
+
 		uv_read_start((uv_stream_t *)client, &http_worker_alloc_buffer, &http_worker_read);
+		printf("Accepted connection\n");
 	}
 	else {
-		printf("Failed to accept client %\ns", uv_strerror(result));
+		printf("Failed to accept client %s\n", uv_strerror(result));
 	}
 }
 

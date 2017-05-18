@@ -15,66 +15,90 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\util\hashtable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\common.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\array.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\client\client.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\net\worker.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\routes\router.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\types\req.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\types\res.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\array.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\common.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\hashtable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\libhttp.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vendor\http-parser\http_parser.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\client\client.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\types\req.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\net\worker.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\include\routes\router.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\routes\router.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\include\util\array.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\include\util\common.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\include\util\hashtable.c">
+    <ClCompile Include="src\net\buffer\buffer.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\client\client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\hashtable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\array.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\client\client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\worker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\routes\router.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\types\req.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\types\res.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\array.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\hashtable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="vendor\http-parser\include\http_parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\include\types\req.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\client\client.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\types\res.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\types\res.c">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\net\worker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\types\parser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\util\array.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\util\common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include\util\hashtable.h">
+    <ClInclude Include="src\net\buffer\buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
