@@ -7,6 +7,10 @@
 #include <stdio.h>
 #include <uv.h>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 void libhttp_handler(http_client_t *client, http_req_t *req) {
 	http_res_send("<h3>libhttp-1.0</h3>Powered by libhttp-1.0, a minimal asynchronous HTTP server written in C<br /><br /> \
 		Source code available on <a href=\"https://github.com/leonhartley/libhttp\">GitHub</a>", client->res);
@@ -14,16 +18,19 @@ void libhttp_handler(http_client_t *client, http_req_t *req) {
 
 void on_request(http_client_t *client, http_req_t *req) {
 	printf("requesting %s\n", req->url);
+
 }
 
 typedef struct {
 	char *data;
 } test_s;
 
-// --dir arg, this will start the http server listening and parsing all requests
-// 
-//
 int main(int argc, char *argv[]) {
+
+#ifdef _WIN32
+	SetConsoleTitle("libhttp-1.0");
+#endif
+
 	http_router_t router;
 	http_router_init(&router);
 

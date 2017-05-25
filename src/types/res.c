@@ -6,10 +6,19 @@
 http_res_t *http_res_create() {
 	http_res_t *res = (http_res_t *) malloc(sizeof(http_res_t));
 
-	res->headers = (hashtable_t *)malloc(sizeof(hashtable_t *));
-	hashtable_new(&res->headers);
+	res->header_count = 0;
+	res->headers = calloc(3, sizeof(http_res_t));
 
 	return res;
+}
+
+void http_res_add_header(char *key, char *value, http_res_t *res) {
+	int header_index = res->header_count++;
+	
+	res->headers[header_index] = malloc(sizeof(http_header_t));
+
+	res->headers[header_index]->key = key;
+	res->headers[header_index]->value = value;
 }
 
 void http_res_send(char *str, http_res_t *res) {
@@ -18,9 +27,9 @@ void http_res_send(char *str, http_res_t *res) {
 	res->status = 200; // OK
 	res->body = str;
 
-	hashtable_add(res->headers, "Content-Type", "text/html; charset=UTF-8");
-	hashtable_add(res->headers, "Server", "libhttp-1.0");
-	hashtable_add(res->headers, "Connection", "close");
+	http_res_add_header("Content-Type", "text/html; charset=UTF-8", res);
+	http_res_add_header("Server", "libhttp-1.0", res);
+	http_res_add_header("Connection", "close", res);
 }
 
 typedef struct {
@@ -39,16 +48,8 @@ char *http_status_str(int status) {
 	}
 }
 
-void http_res_append_header(void *key, void *data) {
-	// find the header, append the header to the buffer.
-	http_res_state_s *state = (http_res_state_s *)data;
-	char *val;
-	
-	hashtable_get(state->res->headers, key, &val);
-
-	if (val != NULL) {
-		http_buffer_writef(state->buffer, "%s: %s\r\n", key, val);
-	}
+void http_res_append_header(http_header_t *header, http_res_state_s *state) {	
+	http_buffer_writef(state->buffer, "%s: %s\r\n", header->key, header->value);
 }
 
 http_buffer_t *http_res_compose(http_res_t *res) {
@@ -64,7 +65,9 @@ http_buffer_t *http_res_compose(http_res_t *res) {
 		.res = res
 	};
 
-	hashtable_foreach_key(res->headers, &http_res_append_header, &state);
+	for (int i = 0; i < res->header_count; i++) {
+		http_res_append_header(res->headers[i], &state);
+	}
 
 	http_buffer_writef(buffer, "Content-Length: %i\r\n", strlen(res->body));
 	http_buffer_writeln("", buffer);
@@ -73,15 +76,15 @@ http_buffer_t *http_res_compose(http_res_t *res) {
 
 	res->flush = 0;
 	//http_res_dispose(res);
-
-	printf("%s", buffer->data);
 	return buffer;
 }
 
 void http_res_dispose(http_res_t *res) {
-	// free anything else that's needed
-	//hashtable_destroy(res->headers);
+	for (int i = 0; i < res->header_count; i++) {
+		free(res->headers[i]);
+	}
 
+	res->header_count = 0;
 	free(res->headers);
 	free(res);
 }

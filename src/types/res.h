@@ -1,5 +1,6 @@
 #pragma once
 
+#include "header.h"
 #include "../net/buffer/buffer.h"
 #include "../util/hashtable.h"
 
@@ -8,7 +9,8 @@
 
 typedef struct {
 	int status;
-	hashtable_t *headers;
+	int header_count;
+	http_header_t **headers;
 	char *body;
 	int flush;
 } http_res_t;
