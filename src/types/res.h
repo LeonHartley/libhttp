@@ -10,7 +10,6 @@ typedef struct {
 	int status;
 	hashtable_t *headers;
 	char *body;
-
 	int flush;
 } http_res_t;
 

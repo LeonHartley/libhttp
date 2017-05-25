@@ -87,6 +87,8 @@ void http_worker_read(uv_stream_t *handle, ssize_t read, const uv_buf_t *buffer)
 
 	http_worker_t *worker = (http_worker_t *)handle->loop->data;
 
+	worker->handler(client, request);
+
 	if (http_router_exec(request->type, request->url, client, request, worker->config->router)) {
 		uv_close((uv_handle_t *)handle, &http_worker_on_close);
 	}
