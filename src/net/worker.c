@@ -26,9 +26,9 @@ void http_worker_on_write(uv_write_t *req, int status) {
 	}
 
 	http_write_token_s *token = (http_write_token_s *)req->data;
-
 	http_buffer_dispose(token->http_buffer);
 
+	free(token);
 	free(req);
 }
 
@@ -47,12 +47,12 @@ void http_worker_flush(http_client_t *client) {
 
 	write->handle = client->socket;
 
-	http_write_token_s token = {
-		.uv_buffer = &wbuf,
-		.http_buffer = buffer
-	};
+	http_write_token_s *token = malloc(sizeof(http_write_token_s));
 
-	write->data = &token;
+	token->http_buffer = buffer;
+	token->uv_buffer = &wbuf;
+
+	write->data = token;
 
 	uv_write(write, client->socket, &wbuf, 1, &http_worker_close_on_write);
 }

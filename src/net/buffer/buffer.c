@@ -52,7 +52,7 @@ void http_buffer_write_int(int i, http_buffer_t *buffer) {
 	buffer->position += 4;
 }
 
-void http_buffer_dispose(http_buffer_t * buffer) {
+void http_buffer_dispose(http_buffer_t *buffer) {
 	// when we are disposing a buffer, we presume we've already
 	// copied the data to a uv buffer so we can free it
 	free(buffer->data);
