@@ -1,13 +1,14 @@
 #include "buffer.h"
 
+#include <memory.h>
 #include <stdio.h>
 #include <stdarg.h>
 
-http_buffer_t *http_buffer_create(size_t size) {
+http_buffer_t *http_buffer_create() {
 	http_buffer_t *buffer = (http_buffer_t *)malloc(sizeof(http_buffer_t));
-	
+
 	buffer->position = 0;
-	buffer->data = malloc(size);
+	buffer->data = malloc(512);
 
 	return buffer;
 }
@@ -32,8 +33,8 @@ void http_buffer_writef(http_buffer_t *buffer, char *format, ...) {
 	va_start(args, format);
 	va_copy(tmpargs, args);
 
-	// calculate if we have space for the formatted data,
-	// if we don't, resize the buffer. 
+	// todo: calculate if we have space for the formatted data,
+	//		 if we don't, resize the buffer. 
 	int required = vsnprintf(NULL, 0, format, tmpargs);
 
 	// write the formatted string to the buffer

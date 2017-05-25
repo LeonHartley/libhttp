@@ -2,6 +2,11 @@
 
 #include <stdio.h>
 
+typedef struct {
+	uv_buf_t *uv_buffer;
+	http_buffer_t *http_buffer;
+} http_write_token_s;
+
 void http_worker_alloc_buffer(uv_handle_t *handle, ssize_t size, uv_buf_t *buffer) {
 	buffer->base = malloc(size);
 	buffer->len = size;
@@ -20,14 +25,14 @@ void http_worker_on_write(uv_write_t *req, int status) {
 		return;
 	}
 
-	http_buffer_dispose(req->data);
-	
-	//free(req->write_buffer.base);
-	//free(req);
+	http_write_token_s *token = (http_write_token_s *)req->data;
+
+	http_buffer_dispose(token->http_buffer);
+
+	free(req);
 }
 
 void http_worker_close_on_write(uv_write_t *req, int status) {
-
 	uv_close((uv_handle_t *)req->handle, &http_worker_on_close);
 	http_worker_on_write(req, status);
 }
@@ -41,7 +46,13 @@ void http_worker_flush(http_client_t *client) {
 	memcpy(wbuf.base, buffer->data, wbuf.len);
 
 	write->handle = client->socket;
-	write->data = buffer;
+
+	http_write_token_s token = {
+		.uv_buffer = &wbuf,
+		.http_buffer = buffer
+	};
+
+	write->data = &token;
 
 	uv_write(write, client->socket, &wbuf, 1, &http_worker_close_on_write);
 }
@@ -60,6 +71,8 @@ void http_worker_read(uv_stream_t *handle, ssize_t read, const uv_buf_t *buffer)
 	char *data = malloc(read);
 	memcpy(data, buffer->base, read);
 
+	free(buffer->base);
+
 	http_client_t *client;
 
 	if (handle->data == NULL) {
@@ -75,7 +88,6 @@ void http_worker_read(uv_stream_t *handle, ssize_t read, const uv_buf_t *buffer)
 	http_worker_t *worker = (http_worker_t *)handle->loop->data;
 
 	if (http_router_exec(request->type, request->url, client, request, worker->config->router)) {
-		// unsuccessful
 		uv_close((uv_handle_t *)handle, &http_worker_on_close);
 	}
 	else {
@@ -84,7 +96,6 @@ void http_worker_read(uv_stream_t *handle, ssize_t read, const uv_buf_t *buffer)
 		}
 	}
 
-	// here's where we send the response and then trigger a close event.
 	http_req_dispose(request);
 }
 

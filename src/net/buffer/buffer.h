@@ -1,13 +1,11 @@
 #pragma once
 
-#include <memory.h>
-
 typedef struct {
 	int position;
 	char *data;
 } http_buffer_t;
 
-http_buffer_t *http_buffer_create(size_t size);
+http_buffer_t *http_buffer_create();
 
 void http_buffer_writeln(char *data, http_buffer_t *buffer);
 

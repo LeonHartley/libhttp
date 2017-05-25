@@ -47,23 +47,22 @@ void http_res_append_header(void *key, void *data) {
 	hashtable_get(state->res->headers, key, &val);
 
 	if (val != NULL) {
-		http_buffer_write(key, state->buffer);
-		http_buffer_write(": ", state->buffer);
-		http_buffer_writeln(val, state->buffer);
+		http_buffer_writef(state->buffer, "%s: %s\r\n", key, val);
 	}
 }
 
 http_buffer_t *http_res_compose(http_res_t *res) {
-	http_buffer_t *buffer = (http_buffer_t *)malloc(sizeof(http_buffer_t));
+	http_buffer_t *buffer = (http_buffer_t *) malloc(sizeof(http_buffer_t));
 
 	buffer->position = 0;
 	buffer->data = malloc(512);
 
-	http_buffer_writeln(http_status_str(res->status), buffer);
+	http_buffer_writef(buffer, "%s\r\n", http_status_str(res->status));
 
-	http_res_state_s state;
-	state.buffer = buffer;
-	state.res = res;
+	http_res_state_s state = {
+		.buffer = buffer,
+		.res = res
+	};
 
 	hashtable_foreach_key(res->headers, &http_res_append_header, &state);
 
@@ -74,10 +73,15 @@ http_buffer_t *http_res_compose(http_res_t *res) {
 
 	res->flush = 0;
 	//http_res_dispose(res);
+
+	printf("%s", buffer->data);
 	return buffer;
 }
 
 void http_res_dispose(http_res_t *res) {
 	// free anything else that's needed
-	hashtable_destroy(res->headers);
+	//hashtable_destroy(res->headers);
+
+	free(res->headers);
+	free(res);
 }

@@ -11,9 +11,10 @@ http_client_t *http_client_create(uv_tcp_t *socket) {
 }
 
 void http_client_dispose(http_client_t * client) {
-	http_res_dispose(client->res);
-	free(client->res);
+	//http_res_dispose(client->res);
+	//free(client->res);
 
+	http_res_dispose(client->res);
 	free(client->parser);
 	free(client);
 }
